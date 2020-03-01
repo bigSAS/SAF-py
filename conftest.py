@@ -1,15 +1,41 @@
 import pytest
+import requests
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from framework.action_framework import Actions, BasicWebElementProvider
+
+from framework.action_framework import Actions
+from framework.element_provider import BasicWebElementProvider
+
+
+HUB_URL = 'http://192.168.1.84:4444/wd/hub'
+PING_TIMEOUT = 10
+
+
+@pytest.fixture(scope='session')
+def hub_is_online():
+    try:
+        response = requests.get(
+            HUB_URL.replace('wd/hub', 'grid/api/hub'),
+            timeout=PING_TIMEOUT
+        )
+        return response.status_code == 200
+    except requests.ConnectionError as e:
+        return False
+
 
 @pytest.fixture(scope='function')
-def driver():
-    hub = 'http://192.168.1.84:4444/wd/hub'
+def driver(hub_is_online):
+    if not hub_is_online:
+        raise Exception("Selenium HUB is offline :(")
+    
     capabilities = DesiredCapabilities.CHROME.copy()
     options = webdriver.ChromeOptions()
-    driver = webdriver.Remote(options=options, command_executor=hub, desired_capabilities=capabilities)
-    return driver
+    return webdriver.Remote(
+        command_executor=HUB_URL,
+        options=options,
+        desired_capabilities=capabilities
+    )
+
 
 @pytest.fixture(scope='function')
 def actions(driver):
@@ -17,4 +43,3 @@ def actions(driver):
     yield actions
     
     actions.element_provider.driver.quit()
-
