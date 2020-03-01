@@ -43,3 +43,4 @@ def actions(driver):
     yield actions
     
     actions.element_provider.driver.quit()
+
