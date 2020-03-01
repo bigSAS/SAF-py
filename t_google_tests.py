@@ -1,5 +1,4 @@
 from framework.action_framework import Actions
-
 from pages_google import Search
 
 

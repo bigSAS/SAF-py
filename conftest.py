@@ -7,8 +7,9 @@ from framework.action_framework import Actions
 from framework.element_provider import BasicWebElementProvider
 
 
+LOCAL_WEBDRIVER = False
 HUB_URL = 'http://192.168.1.84:4444/wd/hub'
-PING_TIMEOUT = 10
+PING_TIMEOUT = 5
 
 
 @pytest.fixture(scope='session')
@@ -25,16 +26,19 @@ def hub_is_online():
 
 @pytest.fixture(scope='function')
 def driver(hub_is_online):
-    if not hub_is_online:
-        raise Exception("Selenium HUB is offline :(")
-    
-    capabilities = DesiredCapabilities.CHROME.copy()
-    options = webdriver.ChromeOptions()
-    return webdriver.Remote(
-        command_executor=HUB_URL,
-        options=options,
-        desired_capabilities=capabilities
-    )
+    if not LOCAL_WEBDRIVER:
+        if not hub_is_online:
+            raise Exception("Selenium HUB is offline :(")
+        
+        capabilities = DesiredCapabilities.CHROME.copy()
+        options = webdriver.ChromeOptions()
+        return webdriver.Remote(
+            command_executor=HUB_URL,
+            options=options,
+            desired_capabilities=capabilities
+        )
+    else:
+        return webdriver.Chrome()
 
 
 @pytest.fixture(scope='function')
@@ -43,4 +47,3 @@ def actions(driver):
     yield actions
     
     actions.element_provider.driver.quit()
-
