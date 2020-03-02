@@ -20,8 +20,9 @@ def list_notes():
 
 
 def add_note():
-	note = input("Write new note: ")
-	if len(note) > 0:
+	note = input("Write new note: ").strip()
+	note_len = len(note)
+	if note_len > 0:
 		notes.append(note)
 		list_notes()
 	else:
@@ -40,25 +41,23 @@ def delete_note():
 		delete_note()
 			
 def edit_note():
-	list_notes()
-	command_edit = input("Which note you'd like to edit? ")
-	command_edit_int = int(command_edit)
-	#do poprawy
-	if notes[command_edit_int -1] in range(len(notes - 1)):
-		try:
-			command_edit_index = command_edit_int - 1
-			print(notes[command_edit_index])
-			new_note = input('Write your note and press Enter: ')
-			notes.pop(command_edit_index)
-			notes.insert(command_edit_index, new_note)
-			list_notes()
-		except:
-			print("Invalid number, please type which note you'd like to edit: ")
-			print("-"*10)
-			edit_note()
-	else:
-		print("Invalid number, please type which note you'd like to edit: ")
-		list_notes()
+    list_notes()
+    try:
+        command_edit_int = int(input("Which note you'd like to edit? "))
+    except:
+        print('invalid note number!')
+        edit_note()
+    try:
+        note_index = command_edit_int - 1
+        print(notes[note_index])
+        new_note = input('Write your note and press Enter: ')
+        notes[note_index] = new_note
+        list_notes() 
+    except:
+        print("Invalid number, please type which note you'd like to edit: ")
+        print("-"*10)
+        edit_note()
+
 		
 def quit_notes_app():
 		print("NoteApp is closing... .. .  .   .  CLOSED!")
