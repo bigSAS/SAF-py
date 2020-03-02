@@ -21,4 +21,7 @@ def index():
 
 
 # @run app server
-run(host='0.0.0.0', port=80)
+if __name__ == "__main__":
+    run(host='localhost', port=8080)
+
+app = bottle.default_app()
