@@ -65,7 +65,7 @@ def quit_notes_app():
 		sys.exit()
 		
 
-
+# todo dodac komende do zamykania apki
 options = """
 What are you going to do?
 List your notes - type 'list'
@@ -74,6 +74,7 @@ Delete note - type 'delete'
 Edit note - type 'edit'
 """
 
+# todo: zrobic tak aby nie pisac list etc tylko 1. list, 2. ....
 commands = {
 		"list": list_notes, 
 		"add": add_note, 
