@@ -3,21 +3,22 @@ def run_program():
 	print("")
 	command = input("Type 'option' which you'd like to do: ").lower()
 	if command in commands:
-		option_is_valid = True
 		option = commands[command]
 		option()
 	else:
 		print('Invalid option')
 		print('-'*10)
 		run_program()
-	run_program()		
-	
+	run_program()
+
+
 def list_notes():
 	i = 1
 	for note in notes:
 		print(f'{i}. {note}')
 		i = i + 1
-	
+
+
 def add_note():
 	note = input("Write new note: ")
 	if len(note) > 0:
