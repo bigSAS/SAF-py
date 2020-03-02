@@ -9,7 +9,7 @@ from framework.element_provider import BasicWebElementProvider
 
 LOCAL_WEBDRIVER = False
 
-HUB_URL = 'http://server713592.nazwa.pl:4444/wd/hub'
+HUB_URL = 'http://sas-kodzi.pl:4444/wd/hub'
 PING_TIMEOUT = 5
 
 
