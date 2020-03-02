@@ -8,7 +8,8 @@ from framework.element_provider import BasicWebElementProvider
 
 
 LOCAL_WEBDRIVER = False
-HUB_URL = 'http://192.168.1.84:4444/wd/hub'
+
+HUB_URL = 'http://server713592.nazwa.pl:4444/wd/hub'
 PING_TIMEOUT = 5
 
 
@@ -32,6 +33,8 @@ def driver(hub_is_online):
         
         capabilities = DesiredCapabilities.CHROME.copy()
         options = webdriver.ChromeOptions()
+        options.add_argument("--headless")
+        options.add_argument("--no-sandbox")
         return webdriver.Remote(
             command_executor=HUB_URL,
             options=options,
