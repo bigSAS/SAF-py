@@ -1,6 +1,7 @@
 import bottle
 import pathlib
 from bottle import get, route, run, error, view, static_file
+from api.app import api
 
 STATIC_ROOT = str(pathlib.Path(__file__).parent.absolute()) + '/static'
 CSS_ROOT = STATIC_ROOT + '/css/'
@@ -42,6 +43,9 @@ def index():
 # @run app server
 if __name__ == "__main__":
     # local
-    run(host='localhost', port=8080)
+    app = bottle.default_app()
+    app.merge(api)
+    app.run(host='localhost', port=8080)
 # gunicorn
 app = bottle.default_app()
+app.merge(api)
