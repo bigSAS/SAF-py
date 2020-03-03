@@ -11,6 +11,36 @@
 #- powinien miec metode put_in_basket(item) czyli wrzucenie czegos do koszyka
 #- powinien miec metode buy() - jesli koszyk jest pusty to raise exception, jesli nie to print 'kupiles przedmioty ...'
 
+
+class Customer:
+    
+    
+    def __init__(self, name):
+        self.name = name
+        self.basket = []
+        
+    def put_in_basket(self, item):
+        self.basket.append(item)
+        
+    def buy(self):
+        if len(self.basket) == 0:
+            raise Exception('Your basket is empty')
+        else:
+            print('Transaction in progress... ... ... .. .. .. . . . ')
+            print('You bought:')
+            i = 1
+            for product in self.basket:
+                print(f'{i} {product}')
+                i += 1
+                
+customer = Customer('Menel')
+customer.put_in_basket('5g lemon haze (CBD only)')
+customer.put_in_basket('2g white widow (CBD only)')
+customer.put_in_basket('5g strawberry kush (CBD only)')
+customer.buy()
+                    
+
+"""
 class Customer:
     def __init__(self, name):
         self.name = name
@@ -24,25 +54,6 @@ class Customer:
             raise Exception('basket is empty! cannot buy')
         print('bought:')
         for i, item in enumerate(self.basket, 1):
-            print(f'{i}. {item}')
-            
-            
-class Product:
-    def __initi__(self, prod_name, price):
-        self.prod_name = prod_name
-        self.price = price
+            print(f'{i}. {item}')        
+ """          
 
-    def test(self):
-        if len(prod_name) > 0:
-            print('good')
-
-if __name__ == '__main__':
-    
-#    prod_1 = Product('beer', 5)
-#    prod_1.test()
-    product.test('beer', 5)
-    customer = Customer('sas')
-    customer.put_in_basket('beer')
-    customer.put_in_basket('wine')
-    customer.put_in_basket('vodka')
-    customer.buy()
