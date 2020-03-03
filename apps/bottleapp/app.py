@@ -23,6 +23,7 @@ def index():
 
 # @run app server
 if __name__ == "__main__":
+    # local
     run(host='localhost', port=8080)
-
+# gunicorn
 app = bottle.default_app()

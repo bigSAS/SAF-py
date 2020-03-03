@@ -7,6 +7,6 @@
 </div>
 <div class="row">
   <div class="col text-center">
-    <img src="https://66.media.tumblr.com/f185966a4f504754a72eed4092d4bd67/tumblr_mpygmpPJre1rilo3mo1_500.gif">
+    <img src="https://66.media.tumblr.com/f185966a4f504754a72eed4092d4bd67/tumblr_mpygmpPJre1rilo3mo1_500.gif" style="width: 100%;">
   </div>
 </div>
