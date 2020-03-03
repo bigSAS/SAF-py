@@ -1,4 +1,5 @@
-import bottle, pathlib
+import bottle
+import pathlib
 from bottle import get, route, run, error, view, static_file
 
 STATIC_ROOT = str(pathlib.Path(__file__).parent.absolute()) + '/static'
@@ -21,19 +22,21 @@ def js(filepath):
 
 # @routes-errors
 @error(404)
+@view('404')
 def not_found(error):
-    return 'Nothing here, sorry'
+    pass
 
 
 @error(500)
+@view('500')
 def server_error(error):
-    return 'Server error :('
+    pass
 
 
 @route('/')
 @view('index')
 def index():
-    return None
+    pass
 
 
 # @run app server
