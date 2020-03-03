@@ -5,3 +5,27 @@
 # **** moglby miec portfel, a produkt wkladany do koszyka cene
 # **** jesli ma zamalo siana w portfelu to nie moze kupic :)
 
+
+class Customer:
+    
+    
+    def __init___(self, basket, receipt, wallet):
+        self.basket = basket
+        self.receipt = receipt
+        self.wallet = wallet
+        self.got_money = wallet - receipt
+        
+    def buy_items(self):
+        if self.got_money < 0:
+            return 'Purchase refused, not enough money'
+        elif basket <= 0:
+            return 'Put items to your basket'
+        else:
+            return 'Thanks for buying good stuff. See you next time'
+            
+
+customer_1 = Customer(basket = 3, receipt = 300, wallet = 500)
+
+print(Customer.buy_items(customer_1))
+
+        
