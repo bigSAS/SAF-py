@@ -13,9 +13,9 @@ def css(filepath):
     return static_file(filepath, root=CSS_ROOT)
 
 
-# @static css
+# @static js
 @get('/static/js/<filepath>')
-def css(filepath):
+def js(filepath):
     return static_file(filepath, root=JS_ROOT)
 
 
