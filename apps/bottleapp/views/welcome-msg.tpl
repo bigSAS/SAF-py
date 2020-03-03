@@ -2,7 +2,7 @@
 <div class="row">
   <div class="col text-center">
     <h1>O co tu chodzi ?</h1>
-    <h2><strong>SAS</strong> kodzi :)</h2>
+    <h2><strong class="red">SAS</strong> kodzi :)</h2>
   </div>
 </div>
 <div class="row">

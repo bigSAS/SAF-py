@@ -1,8 +1,23 @@
-import bottle
-from bottle import route, run, error, view
+import bottle, pathlib
+from bottle import get, route, run, error, view, static_file
+
+STATIC_ROOT = str(pathlib.Path(__file__).parent.absolute()) + '/static'
+CSS_ROOT = STATIC_ROOT + '/css/'
+JS_ROOT = STATIC_ROOT + '/js/'
 
 
 # @routes
+# @static css
+@get('/static/css/<filepath>')
+def css(filepath):
+    return static_file(filepath, root=CSS_ROOT)
+
+
+# @static css
+@get('/static/js/<filepath>')
+def css(filepath):
+    return static_file(filepath, root=JS_ROOT)
+
 
 # @routes-errors
 @error(404)
