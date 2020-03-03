@@ -13,6 +13,8 @@ class Customer:
         self.basket = []
         
     def put_in_basket(self, item):
+        if not isinstance(item, Product):
+            raise Exception('item must be a Product instance!')
         self.basket.append(item)
         
     def buy(self):
@@ -20,11 +22,20 @@ class Customer:
             raise Exception('basket is empty! cannot buy')
         print('bought:')
         for i, item in enumerate(self.basket, 1):
-            print(f'{i}. {item}')
+            print(f'{i}. {item.name} - {item.price} PLN')
+
+
+class Product:
+    def __init__(self, name, price):
+        self.name = name
+        self.price = price
 
 
 if __name__ == '__main__':
+    beer = Product('Beer', 5)
+    jellys = Product('Jellys', 3)
     customer = Customer('sas')
-    customer.put_in_basket('beer')
+    customer.put_in_basket(beer)
+    customer.put_in_basket(jellys)
     customer.buy()
         
