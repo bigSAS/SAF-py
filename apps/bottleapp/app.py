@@ -1,3 +1,6 @@
+"""
+Main application
+"""
 import bottle
 import pathlib
 from bottle import get, route, run, error, view, static_file
