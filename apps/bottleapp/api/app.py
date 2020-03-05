@@ -40,8 +40,8 @@ def api_root():
     return dumps(Route.list())
 
 
-@db_session
 @api.route(route(Route.NOTES))
 def notes():
-    notes = select(n for n in Note)[:]
-    return dumps([NoteSerializer(note).serialize() for note in notes])
+    with db_session:
+        notes = select(n for n in Note)[:]
+        return dumps([NoteSerializer(note).serialized for note in notes])
