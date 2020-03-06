@@ -5,6 +5,10 @@ class SerializerError(Exception): pass
 
 
 class Serializer:
+    """
+    # todo: docs
+    # todo: feature - xml ?
+    """
     fields = tuple()
     model = None
 
@@ -20,13 +24,18 @@ class Serializer:
             try:
                 result = {}
                 for field in self.fields:
-                    result[field] = getattr(instance, field)
+                    getter = getattr(self, f'serialized_{field}', None)
+                    if callable(getter):
+                        result[field] = getter(getattr(instance, field))
+                    else:
+                        result[field] = getattr(instance, field)
                 return result
             except Exception as e:
                 # todo: specialize error handling
-                raise SerializerError('serialization failed')
+                raise SerializerError(f'serialization failed:\n{e}')
 
         if isinstance(self.obj, list):
+            # todo: is iterable :)
             return [dictify(ins) for ins in self.obj]                            
         else:
             return dictify(self.obj)
@@ -41,6 +50,7 @@ class Serializer:
         if isinstance(loaded, list):
             return [cls.__create_model_obj(obj) for obj in loaded]
         return cls.__create_model_obj(loaded)
+    
     @classmethod
     def __create_model_obj(cls, data):
         for field in cls.fields:
