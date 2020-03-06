@@ -1,12 +1,13 @@
 """ SHOP """
 # todo:
-
+import copy
 
 class Customer:
     def __init__(self, name, wallet):
         self.name = name
         self.wallet = wallet
         self.basket = Basket()
+        self.owned = []
     
     def put_product_in_basket(self, product):
         self.basket.put_in(product)
@@ -21,8 +22,18 @@ class Customer:
         # todo: moge kupic tylko wtedy jesli mam wystarczajaco kasy w portfelu
         return self.wallet.amount >= self.basket.total_price()
     
+    def borrow(self, how_much, borrower):
+        if self.wallet.amount < how_much:
+            raise Exception('i dont have {how_much} money :( sorry')
+        else:
+            self.wallet.amount -= how_much
+            borrower.wallet.amount += how_much
+            print(f'{self.name} borrowed {borrower.name} -> {how_much} PLN')
+        
+        
     def __str__(self):
-        return f'{self.name}: {self.wallet}, {self.basket}'
+        owned = '((' +  ', '.join([product.name for product in self.owned]) + '))'
+        return f'{self.name}: {self.wallet}, basket: {self.basket}, owned: {owned}'
 
 
 class Wallet:
@@ -63,7 +74,23 @@ class Product:
         return f'{self.name} - {self.price} PLN'
 
 
-
+class Cashier:
+    def __init__(self, id):
+        self.id = id
+    
+    def sell(self, basket, wallet):
+        total_cost = basket.total_price() # zakladajac ze ufam to co ma koszyk
+        money_from_wallet = wallet.amount
+        if total_cost > money_from_wallet:
+            raise Exception('cannot sell, not enough money')
+        print('here u go :) sold!')
+        sold_products = copy.deepcopy(basket.products)
+        basket.products = []
+        wallet.amount -= total_cost
+        return sold_products
+    
+    def __str__(self):
+        return f'cashierID: {self.id}'
 
 
 if __name__ == '__main__':
@@ -104,3 +131,27 @@ if __name__ == '__main__':
     print(jimmy)
     jimmy.read_total_product_price()
     print(jimmy.can_afford())
+    
+    cashier1 = Cashier(1)
+    cashier2 = Cashier(2)
+    
+    print('cashiers:')
+    print(cashier1)
+    print(cashier2)
+    
+    
+    print('time to buy :)')
+    #if jimmy.can_afford():
+     #   cashier2.sell(jimmy.basket, jimmy.wallet)
+    #else: print('gierara hir men')
+    print('before cashier', jimmy)
+    try:
+        shopped = cashier2.sell(jimmy.basket, jimmy.wallet)
+        jimmy.owned = shopped
+    except:
+        print('fucked, must borrow monih from sas')
+        sas = Customer('sas', Wallet(1000))
+        sas.borrow(100, jimmy)
+        shopped = cashier2.sell(jimmy.basket, jimmy.wallet)
+        jimmy.owned = shopped
+    print('after cashier', jimmy)
