@@ -158,6 +158,13 @@ def test_serializer__deserializing_json_should_return_model_class_object_instanc
     person = PersonSerializer.deserialize_json(json)
     assert isinstance(person, PersonSerializer.model)
 
+def test_serializer__deserializing_json_with_list_should_return_model_class_object_instance_list():
+    json = '[{"name": "jimmy", "age": 21}, {"name": "jimmyh", "age": 23}]'
+    persons = PersonSerializer.deserialize_json(json)
+    assert isinstance(persons, list)
+    for person in persons:
+        assert isinstance(person, PersonSerializer.model)
+
 
 def test_serializer__when_deserialize_json_must_be_valid_json_string():
     invalid_json = json = '{name: "jimmy", "age": 21}'
@@ -165,5 +172,22 @@ def test_serializer__when_deserialize_json_must_be_valid_json_string():
         PersonSerializer.deserialize_json(invalid_json)
     assert 'invalid json' in str(se)
 
-#todo deserialize field valiation
-#todo seriarizer custom fields method matching
+def test_serializer__deserializing_json_must_contain_correct_fields():
+    json = '{"name": "jimmy"}'
+    with pytest.raises(SerializerError) as se:
+        PersonSerializer.deserialize_json(json)
+    assert 'field missing' in str(se)
+
+# todo: custom fields
+def test_serializer__custom_field_when_defined_should_be_added_to_serialized_obj():
+    assert False, "todo"
+
+def test_serializer__custom_field_when_defined_should_be_added_to_serialized_obj_list():
+    assert False, "todo"
+
+def test_serializer__when_custom_field_then_method_for_it_should_be_defined():
+    assert False, "todo"
+
+
+# todo: feature -> xml ???
+

@@ -34,21 +34,19 @@ class Serializer:
     @property
     def json(self) -> str:
         return dumps(self.serialized)
-    
-    @property
-    def xml(self) -> str:
-        # todo: imp, tests first
-        pass
-    
+        
     @classmethod
     def deserialize_json(cls, json):
-        # todo: if list return list
-        # todo: return based on fields
-        return cls.model(**cls.__load_json(json))
-    
-    def deserialize_xml(cls, xml):
-        # todo: impl
-        pass
+        loaded = cls.__load_json(json)
+        if isinstance(loaded, list):
+            return [cls.__create_model_obj(obj) for obj in loaded]
+        return cls.__create_model_obj(loaded)
+    @classmethod
+    def __create_model_obj(cls, data):
+        for field in cls.fields:
+            if field not in data.keys():
+                raise SerializerError(f'field missing: {field}')
+        return cls.model(**data)
     
     @staticmethod
     def __load_json(json):
