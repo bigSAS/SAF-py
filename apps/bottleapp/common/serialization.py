@@ -1,5 +1,5 @@
-from json import dumps
-
+from json import dumps, loads
+from typing import List, Tuple
 
 class SerializerError(Exception): pass
 
@@ -9,7 +9,7 @@ class Serializer:
     model = None
 
     def __init__(self, obj):
-        self.__validate_model_attr()
+        self.__class__.__validate_model_attr()
         self.__validate_fields_attr()
         self.__validate_obj_instance(obj)
         self.obj = obj
@@ -35,13 +35,44 @@ class Serializer:
     def json(self) -> str:
         return dumps(self.serialized)
     
-    def __validate_model_attr(self):
-        if not self.model:
+    @property
+    def xml(self) -> str:
+        # todo: imp, tests first
+        pass
+    
+    @classmethod
+    def deserialize_json(cls, json):
+        # todo: if list return list
+        # todo: return based on fields
+        return cls.model(**cls.__load_json(json))
+    
+    def deserialize_xml(cls, xml):
+        # todo: impl
+        pass
+    
+    @staticmethod
+    def __load_json(json):
+        try:
+            return loads(json)
+        except:
+            raise SerializerError('invalid json')
+
+    @classmethod
+    def __validate_model_attr(cls):
+        if not cls.model:
             raise SerializerError('model attr missing')
 
     def __validate_fields_attr(self):
         if len(self.fields) == 0:
             raise SerializerError('fields not specified')
+        msg = 'fields must be a tuple or list of strings'
+        if (
+            not isinstance(self.fields, list)
+            and not isinstance(self.fields, tuple)
+        ): raise SerializerError(msg)
+        for field in self.fields:
+            if not isinstance(field, str):
+                raise SerializerError(msg)
 
     def __validate_obj_instance(self, obj):
         if isinstance(obj, list):
@@ -49,4 +80,13 @@ class Serializer:
                 self.__validate_obj_instance(ins)
         else:
             if not isinstance(obj, self.model):
-                raise SerializerError(f'invalid obj passed in constructor must be of: {self.model}')
+                raise SerializerError(
+                    'invalid obj passed in constructor must be of:\n'
+                    f'{self.model}.\nInstead got: {obj.__class__.__name__}'
+                )
+            self.__validate_field_names(obj)
+
+    def __validate_field_names(self, obj):
+        for field in self.fields:
+            if not hasattr(obj, field):
+                raise SerializerError(f'incorrect field name: {field}')

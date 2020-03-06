@@ -92,19 +92,21 @@ def test_serializer__serializer_fields_must_have_correct_attr_names():
     
     class BrokenPersonSerializer(Serializer):
         fields = (incorrect_field, 'name')
+        model = Person
 
     with pytest.raises(SerializerError) as se:
-        PersonSerializer(jimmy).serialized
-    assert f'incorrect field name: {incorrect_field}' == se.value
+        BrokenPersonSerializer(jimmy).serialized
+    assert f'incorrect field name: {incorrect_field}' in str(se)
 
 
 def test_serializer__fields_must_be_a_tuple_or_list_of_strings():
     class BrokenFieldsSerializer(Serializer):
         fields = (1, 2)
+        model = Person
 
     with pytest.raises(SerializerError) as se:
         BrokenFieldsSerializer(jimmy).serialized
-    assert 'fields must be a tuple or list of strings' == se.value
+    assert 'fields must be a tuple or list of strings' in str(se)
 
 
 def test_serializer__custom_field_types_serialize_correctly_when_field_serializer_is_binded():
@@ -114,6 +116,7 @@ def test_serializer__custom_field_types_serialize_correctly_when_field_serialize
     
     class WeaponSerializer(Serializer):
         fields = ('name',)
+        model = Weapon
     
     class ArmedPerson(Person):
         def __init__(self, name, age, weapon):
@@ -122,6 +125,7 @@ def test_serializer__custom_field_types_serialize_correctly_when_field_serialize
     
     class ArmedPersonSerializer(Serializer):
         fields = ('weapon', )
+        model = ArmedPerson
         field_serializer_mapping = {
             'weapon': WeaponSerializer
         }
@@ -142,25 +146,24 @@ def test_serializer__custom_field_types_must_have_field_serializer_mapping():
 
     class MissingCustomFieldMappingSerializer(Serializer):
         fields = ('pet',)
+        model = PetPerson
        
     with pytest.raises(SerializerError) as se:
         MissingCustomFieldMappingSerializer(PetPerson('john', 44, Pet('dog'))).serialized
-    assert f'missing field_serializer_mapping for field: {pet}' == se.value
+    assert f'missing field_serializer_mapping for field: {pet}' in str(se)
 
 
-class PersonSerializer(Serializer):
-        fields = ('name', 'age')
-        model = Person
-
-
-def test_serializer__deserializing_should_return_model_class_object_instance():
+def test_serializer__deserializing_json_should_return_model_class_object_instance():
     json = '{"name": "jimmy", "age": 21}'
-    person = PersonSerializer.create(json)
+    person = PersonSerializer.deserialize_json(json)
     assert isinstance(person, PersonSerializer.model)
 
 
-def test_serializer__when_create_must_be_valid_json_string():
+def test_serializer__when_deserialize_json_must_be_valid_json_string():
     invalid_json = json = '{name: "jimmy", "age": 21}'
     with pytest.raises(SerializerError) as se:
-        PersonSerializer.create(invalid_json)
-    assert 'invalid json' in se.value
+        PersonSerializer.deserialize_json(invalid_json)
+    assert 'invalid json' in str(se)
+
+#todo deserialize field valiation
+#todo seriarizer custom fields method matching
