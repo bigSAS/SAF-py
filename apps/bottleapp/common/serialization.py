@@ -1,5 +1,6 @@
 from json import dumps, loads
-from typing import List, Tuple
+from collections.abc import Iterable
+
 
 class SerializerError(Exception): pass
 
@@ -21,21 +22,24 @@ class Serializer:
     @property
     def serialized(self):
         def dictify(instance):
+            basic_types = [str, int, bool, None]
             try:
                 result = {}
                 for field in self.fields:
-                    getter = getattr(self, f'serialized_{field}', None)
-                    if callable(getter):
-                        result[field] = getter(getattr(instance, field))
-                    else:
+                    attr_val = getattr(instance, field)
+                    if type(attr_val) in basic_types:
                         result[field] = getattr(instance, field)
+                    else:
+                        getter = getattr(self, f'serialized_{field}', None)
+                        if callable(getter):
+                            result[field] = getter(getattr(instance, field))
+                        else:
+                            raise SerializerError(f'serializer_method not found for field: {field}')
                 return result
             except Exception as e:
-                # todo: specialize error handling
                 raise SerializerError(f'serialization failed:\n{e}')
 
-        if isinstance(self.obj, list):
-            # todo: is iterable :)
+        if isinstance(self.obj, Iterable):
             return [dictify(ins) for ins in self.obj]                            
         else:
             return dictify(self.obj)
