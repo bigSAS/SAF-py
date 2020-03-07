@@ -177,16 +177,17 @@ def test_serializer__nested_deeper_custom_type_binding_correct():
     class RamboSerializer(Serializer):
         model = Rambo
         fields = ('name', 'weapon_stack')
+        
         @staticmethod
         def serialized_weapon_stack(weapon_stack):
             return WeaponStackSerializer(weapon_stack).serialized
     
     serialized = RamboSerializer(Rambo()).serialized
-    assert True, "todo, assert data"
+    assert serialized.get('weapon_stack').get('weapons')[1].get('name') == 'knife'
 
 
 def test_serializer__nested_deeper_list_custom_type_binding_correct():
-    assert False, "todo, nested x2, ew x3"
+    assert False, "todo"
 
 
 def test_serializer__custom_type_should_have_serialized_method():
