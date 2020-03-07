@@ -2,7 +2,7 @@ import pytest
 from json import loads
 from pony.orm import db_session, select
 from api.model import Note
-from common.serialization import Serializer, SerializerError
+from common.serialization import Serializer, SerializerError, ValidationError, Validator
 
 
 def test_db_insert(db):
@@ -14,10 +14,11 @@ def test_db_insert(db):
 
 # @Serializer tests
 class Person:
-        def __init__(self, name, age):
-            self.name = name
-            self.age = age
-    
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+
 jimmy = Person('Jimmy', 69)
 
 
@@ -27,11 +28,11 @@ class PersonSerializer(Serializer):
 
 
 def test_serializer__json_should_return_valid_json_when_single_obj_instance():
-    loaded = loads(PersonSerializer(jimmy).json)
+    loads(PersonSerializer(jimmy).json)
 
 
 def test_serializer__json_should_return_valid_json_when_list_of_obj_instance():
-    loaded = loads(PersonSerializer([jimmy, jimmy]).json)
+    loads(PersonSerializer([jimmy, jimmy]).json)
 
 
 def test_serializer__serialized_should_return_dict_when_single_obj_instance():
@@ -54,7 +55,7 @@ def test_serializer__model_attr_cannot_be_empty():
     class EmptyModelAttrSerializer(Serializer):
         fields = ('name',)
         model = None
-    
+
     with pytest.raises(SerializerError) as se:
         EmptyModelAttrSerializer(jimmy)
     assert 'model attr missing' in str(se)
@@ -90,7 +91,7 @@ def test_serializer__serializer_fields_cannot_be_empty():
 
 def test_serializer__serializer_fields_must_have_correct_attr_names():
     incorrect_field = 'foo'
-    
+
     class BrokenPersonSerializer(Serializer):
         fields = (incorrect_field, 'name')
         model = Person
@@ -133,7 +134,7 @@ def test_serializer_custom_field_serializer_is_binded():
         @staticmethod
         def serialized_weapon(weapon):
             return WeaponSerializer(weapon).serialized
-    
+
     serialized = ArmedPersonSerializer(ArmedPerson('sas', 34, Weapon('AK47'))).serialized
     assert serialized.get('weapon', {'name': 'foo'}).get('name') == 'AK47'
 
@@ -143,7 +144,7 @@ def test_serializer_custom_list_field_serializer_is_binded():
         def __init__(self, name, age, weapons):
             super().__init__(name, age)
             self.weapons = weapons
-    
+
     class MultiArmedPersonSerializer(Serializer):
         fields = ('weapons', )
         model = MultiArmedPerson
@@ -151,7 +152,7 @@ def test_serializer_custom_list_field_serializer_is_binded():
         @staticmethod
         def serialized_weapons(weapons):
             return WeaponSerializer(weapons).serialized
-    
+
     serialized = MultiArmedPersonSerializer(MultiArmedPerson('sas', 34, [Weapon('AK47'), Weapon('glok')])).serialized
     assert serialized.get('weapons', {'name': 'foo'})[1].get('name') == 'glok'
 
@@ -174,15 +175,15 @@ def test_serializer__nested_deeper_custom_type_binding_correct():
         def __init__(self):
             super().__init__('rambo', 99)
             self.weapon_stack = WeaponStack('warstack', [Weapon('bazooka'), Weapon('knife')])
-   
+
     class RamboSerializer(Serializer):
         model = Rambo
         fields = ('name', 'weapon_stack')
-        
+
         @staticmethod
         def serialized_weapon_stack(weapon_stack):
             return WeaponStackSerializer(weapon_stack).serialized
-    
+
     serialized = RamboSerializer(Rambo()).serialized
     assert serialized.get('weapon_stack').get('weapons')[1].get('name') == 'knife'
 
@@ -191,16 +192,16 @@ def test_serializer__nested_deeper_list_custom_type_binding_correct():
     class Foo:
         def __init__(self, bar):
             self.bar = bar
-    
+
     class FooSerializer(Serializer):
         fields = ('bar',)
         model = Foo
-    
+
     class Car:
         def __init__(self, car):
             self.foo = Foo('bar')
             self.car = car
-    
+
     class CarSerializer(Serializer):
         model = Car
         fields = ('foo', 'car')
@@ -208,12 +209,12 @@ def test_serializer__nested_deeper_list_custom_type_binding_correct():
         @staticmethod
         def serialized_foo(foo):
             return FooSerializer(foo).serialized
-    
+
     class Owner:
         def __init__(self, name):
             self.name = name
             self.cars = [Car('mustang'), Car('ferrari')]
-        
+
     class OwnerSerializer(Serializer):
         model = Owner
         fields = ('name', 'cars')
@@ -221,12 +222,12 @@ def test_serializer__nested_deeper_list_custom_type_binding_correct():
         @staticmethod
         def serialized_cars(cars):
             return CarSerializer(cars).serialized
-    
+
     class OwnersClub:
         def __init__(self):
             self.name = 'jimmys'
             self.owners = [Owner('jimmyone'), Owner('jimmytwo')]
-    
+
     class OwnersClubSerializer(Serializer):
         model = OwnersClub
         fields = ('name', 'owners')
@@ -235,7 +236,6 @@ def test_serializer__nested_deeper_list_custom_type_binding_correct():
         def serialized_owners(owners):
             return OwnerSerializer(owners).serialized
 
-    
     serialized = OwnersClubSerializer(OwnersClub()).serialized
     assert serialized.get('owners')[0].get('cars')[0].get('foo').get('bar') == 'bar'
 
@@ -243,7 +243,7 @@ def test_serializer__nested_deeper_list_custom_type_binding_correct():
 def test_serializer__custom_type_should_have_serialized_method():
     class Bar:
         baz = 'baz'
-    
+
     class Foo:
         bar = Bar()
 
@@ -256,36 +256,34 @@ def test_serializer__custom_type_should_have_serialized_method():
     assert f'serializer_method not found for field: bar' in str(se)
 
 
-
-# todo: custom fields
 def test_serializer__custom_field_when_defined_should_be_added_to_serialized_obj():
     class Foo:
         bar = 'bar'
-    
+
     class FooSerializer(Serializer):
         model = Foo
         fields = ('bar',)
         custom_fields = ('baz',)
-    
+
         @staticmethod
         def get_baz(foo):
             return foo.bar + 'baz'
-    
+
     assert FooSerializer(Foo()).serialized.get('baz') == 'barbaz'
 
 def test_serializer__custom_field_when_defined_should_be_added_to_serialized_obj_list():
     class Foo:
         bar = 'bar'
-    
+
     class FooSerializer(Serializer):
         model = Foo
         fields = ('bar',)
         custom_fields = ('baz',)
-    
+
         @staticmethod
         def get_baz(foo):
             return foo.bar + 'baz'
-    
+
     for ser in FooSerializer([Foo(), Foo()]).serialized:
         assert ser.get('baz') == 'barbaz'
 
@@ -293,44 +291,92 @@ def test_serializer__custom_field_when_defined_should_be_added_to_serialized_obj
 def test_serializer__when_custom_field_then_method_for_it_should_be_defined():
     class Foo:
         bar = 'bar'
-    
+
     class FooSerializer(Serializer):
         model = Foo
         fields = ('bar',)
         custom_fields = ('baz',)
-    
+
     with pytest.raises(SerializerError) as se:
         FooSerializer(Foo()).serialized
     assert 'get_baz not defined' in str(se)
 
 
-def test_serializer__deserializing_json_should_return_model_object_instance():
+def test_serializer__model_instance_from_json_should_return_model_object_instance():
     json = '{"name": "jimmy", "age": 21}'
-    person = PersonSerializer.deserialize_json(json)
-    assert isinstance(person, PersonSerializer.model)
+    result = PersonSerializer.model_instance_from(json)
+    assert isinstance(result.get('object', None), PersonSerializer.model)
 
 
-def test_serializer__deserializing_json_with_list_should_return_model_obj_instance_list():
+def test_serializer__model_instance_from_json_with_list_should_return_model_obj_instance_list():
     json = '[{"name": "jimmy", "age": 21}, {"name": "jimmyh", "age": 23}]'
-    persons = PersonSerializer.deserialize_json(json)
-    assert isinstance(persons, list)
-    for person in persons:
-        assert isinstance(person, PersonSerializer.model)
+    result = PersonSerializer.model_instance_from(json)
+    assert isinstance(result, list)
+    for r in result:
+        assert isinstance(r.get('object', None), PersonSerializer.model)
 
 
-def test_serializer__when_deserialize_json_must_be_valid_json_string():
-    invalid_json = json = '{name: "jimmy", "age": 21}'
+def test_serializer__when_model_instance_from_json_must_be_valid_json_string():
+    invalid_json = '{name: "jimmy", "age": 21}'
     with pytest.raises(SerializerError) as se:
-        PersonSerializer.deserialize_json(invalid_json)
+        PersonSerializer.model_instance_from(invalid_json)
     assert 'invalid json' in str(se)
 
 
 def test_serializer__deserializing_json_must_contain_correct_fields():
     json = '{"name": "jimmy"}'
     with pytest.raises(SerializerError) as se:
-        PersonSerializer.deserialize_json(json)
+        PersonSerializer.model_instance_from(json)
     assert 'field missing' in str(se)
 
-# todo: test nulls and empty strings ???
+def test_serializer__None_field_value_should_result_as_null_in_json():
+    class Pet:
+        name = None
+        species = 'dog'
 
-# todo: feature -> xml ???
+    class PetSerializer(Serializer):
+        model = Pet
+        fields = ('name', 'species')
+
+    serializer = PetSerializer(Pet())
+    json = serializer.json
+    assert loads(json).get('name') is None
+
+def test_serializer__empty_string_field_value_should_result_as_empty_string_in_json():
+    class Pet:
+        name = ''
+        species = 'dog'
+
+    class PetSerializer(Serializer):
+        model = Pet
+        fields = ('name', 'species')
+
+    serializer = PetSerializer(Pet())
+    json = serializer.json
+    assert loads(json).get('name') == ''
+
+if __name__ == '__main__':
+    class MyValidator(Validator):
+        
+        @staticmethod
+        def validate_foo(foo):
+            raise ValidationError("beng!")
+    
+    obj = {
+        "foo": "sas"
+    }
+
+    class Fe:
+        def __init__(self, foo):
+            self.foo = foo
+        
+        def __str__(self):
+            return f'Fe: {self.foo}'
+
+    class FeSerializer(Serializer):
+        model = Fe
+        validator_class = MyValidator
+        fields = ('foo', )
+    
+    obj = FeSerializer.model_instance_from('{"foo": "bar"}')
+    print(obj)

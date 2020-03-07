@@ -3,7 +3,7 @@ Main application
 """
 import bottle
 import pathlib
-from bottle import get, route, run, error, view, static_file
+from bottle import get, route, error, view, static_file
 from api.app import api
 
 STATIC_ROOT = str(pathlib.Path(__file__).parent.absolute()) + '/static'

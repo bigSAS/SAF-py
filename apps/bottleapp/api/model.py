@@ -1,4 +1,4 @@
-from pony.orm import Database, Required, set_sql_debug, commit, select, db_session
+from pony.orm import Database, Required, db_session
 from common.serialization import Serializer
 
 
@@ -13,9 +13,9 @@ class Note(db.Entity):
 class NoteSerializer(Serializer):
     fields = ('author', 'note')
     model = Note
-    
 
-def init_db(db_name = 'db.sqlite'):
+
+def init_db(db_name='db.sqlite'):
     db.bind(provider='sqlite', filename=db_name, create_db=db_name != ':memory:')
     db.generate_mapping(create_tables=True)
     if INIT_DB:

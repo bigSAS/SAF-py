@@ -10,13 +10,12 @@ from typing import List
 from api.model import init_db, Note, NoteSerializer
 
 
-
 API_ROOT = '/api'
 
 
 class Route(Enum):
     NOTES = '/notes'
-    
+
     @staticmethod
     def list() -> List[str]:
         return [
@@ -44,5 +43,4 @@ def api_root():
 def notes():
     with db_session:
         notes = list(select(n for n in Note)[:])
-        type(notes)
         return NoteSerializer(notes).json
