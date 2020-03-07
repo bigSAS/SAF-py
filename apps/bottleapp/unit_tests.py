@@ -284,10 +284,10 @@ def test_serializer__custom_field_when_defined_should_be_added_to_serialized_obj
     
         @staticmethod
         def get_baz(foo):
-            return 'baz'
+            return foo.bar + 'baz'
     
     for ser in FooSerializer([Foo(), Foo()]).serialized:
-        assert ser.get('baz') == 'baz'
+        assert ser.get('baz') == 'barbaz'
 
 
 def test_serializer__when_custom_field_then_method_for_it_should_be_defined():
@@ -330,5 +330,7 @@ def test_serializer__deserializing_json_must_contain_correct_fields():
     with pytest.raises(SerializerError) as se:
         PersonSerializer.deserialize_json(json)
     assert 'field missing' in str(se)
+
+# todo: test nulls and empty strings ???
 
 # todo: feature -> xml ???
