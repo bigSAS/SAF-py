@@ -111,9 +111,10 @@ def test_serializer__fields_must_be_a_tuple_or_list_of_strings():
 
 
 class Weapon:
-        def __init__(self, name):
-            self.name = name
-    
+    def __init__(self, name):
+        self.name = name
+
+
 class WeaponSerializer(Serializer):
     fields = ('name',)
     model = Weapon
@@ -165,9 +166,9 @@ def test_serializer__nested_deeper_custom_type_binding_correct():
         model = WeaponStack
         fields = ('weapons',)
 
-    @staticmethod
-    def serialized_weapons(weapons):
-        return WeaponSerializer(weapons).serialized
+        @staticmethod
+        def serialized_weapons(weapons):
+            return WeaponSerializer(weapons).serialized
 
     class Rambo(Person):
         def __init__(self):
@@ -187,20 +188,72 @@ def test_serializer__nested_deeper_custom_type_binding_correct():
 
 
 def test_serializer__nested_deeper_list_custom_type_binding_correct():
-    assert False, "todo"
+    class Foo:
+        def __init__(self, bar):
+            self.bar = bar
+    
+    class FooSerializer(Serializer):
+        fields = ('bar',)
+        model = Foo
+    
+    class Car:
+        def __init__(self, car):
+            self.foo = Foo('bar')
+            self.car = car
+    
+    class CarSerializer(Serializer):
+        model = Car
+        fields = ('foo', 'car')
+
+        @staticmethod
+        def serialized_foo(foo):
+            return FooSerializer(foo).serialized
+    
+    class Owner:
+        def __init__(self, name):
+            self.name = name
+            self.cars = [Car('mustang'), Car('ferrari')]
+        
+    class OwnerSerializer(Serializer):
+        model = Owner
+        fields = ('name', 'cars')
+
+        @staticmethod
+        def serialized_cars(cars):
+            return CarSerializer(cars).serialized
+    
+    class OwnersClub:
+        def __init__(self):
+            self.name = 'jimmys'
+            self.owners = [Owner('jimmyone'), Owner('jimmytwo')]
+    
+    class OwnersClubSerializer(Serializer):
+        model = OwnersClub
+        fields = ('name', 'owners')
+
+        @staticmethod
+        def serialized_owners(owners):
+            return OwnerSerializer(owners).serialized
+
+    
+    serialized = OwnersClubSerializer(OwnersClub()).serialized
+    assert serialized.get('owners')[0].get('cars')[0].get('foo').get('bar') == 'bar'
 
 
 def test_serializer__custom_type_should_have_serialized_method():
-    # hint: when type is not in default types and no method raise
-    class MissingSerializerMethodArmedPersonSerializer(Serializer):
-        fields = ('weapon', )
-        model = ArmedPerson
+    class Bar:
+        baz = 'baz'
+    
+    class Foo:
+        bar = Bar()
+
+    class MissingSerializerMethodSerializer(Serializer):
+        fields = ('bar', )
+        model = Foo
 
     with pytest.raises(SerializerError) as se:
-        MissingSerializerMethodArmedPersonSerializer(
-            ArmedPerson('sas', 34, Weapon('AK47'))
-        ).serialized
-    assert f'serializer_method not found for field: weapon' in str(se)
+        MissingSerializerMethodSerializer(Foo()).serialized
+    assert f'serializer_method not found for field: bar' in str(se)
 
 
 def test_serializer__deserializing_json_should_return_model_object_instance():
