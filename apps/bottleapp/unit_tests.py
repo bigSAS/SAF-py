@@ -269,9 +269,9 @@ def test_serializer__custom_field_when_defined_should_be_added_to_serialized_obj
     
         @staticmethod
         def get_baz(foo):
-            return 'baz'
+            return foo.bar + 'baz'
     
-    assert FooSerializer(Foo()).serialized.get('baz') == 'baz'
+    assert FooSerializer(Foo()).serialized.get('baz') == 'barbaz'
 
 def test_serializer__custom_field_when_defined_should_be_added_to_serialized_obj_list():
     class Foo:
