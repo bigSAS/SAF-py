@@ -256,6 +256,54 @@ def test_serializer__custom_type_should_have_serialized_method():
     assert f'serializer_method not found for field: bar' in str(se)
 
 
+
+# todo: custom fields
+def test_serializer__custom_field_when_defined_should_be_added_to_serialized_obj():
+    class Foo:
+        bar = 'bar'
+    
+    class FooSerializer(Serializer):
+        model = Foo
+        fields = ('bar',)
+        custom_fields = ('baz',)
+    
+        @staticmethod
+        def get_baz(foo):
+            return 'baz'
+    
+    assert FooSerializer(Foo()).serialized.get('baz') == 'baz'
+
+def test_serializer__custom_field_when_defined_should_be_added_to_serialized_obj_list():
+    class Foo:
+        bar = 'bar'
+    
+    class FooSerializer(Serializer):
+        model = Foo
+        fields = ('bar',)
+        custom_fields = ('baz',)
+    
+        @staticmethod
+        def get_baz(foo):
+            return 'baz'
+    
+    for ser in FooSerializer([Foo(), Foo()]).serialized:
+        assert ser.get('baz') == 'baz'
+
+
+def test_serializer__when_custom_field_then_method_for_it_should_be_defined():
+    class Foo:
+        bar = 'bar'
+    
+    class FooSerializer(Serializer):
+        model = Foo
+        fields = ('bar',)
+        custom_fields = ('baz',)
+    
+    with pytest.raises(SerializerError) as se:
+        FooSerializer(Foo()).serialized
+    assert 'get_baz not defined' in str(se)
+
+
 def test_serializer__deserializing_json_should_return_model_object_instance():
     json = '{"name": "jimmy", "age": 21}'
     person = PersonSerializer.deserialize_json(json)
@@ -283,15 +331,4 @@ def test_serializer__deserializing_json_must_contain_correct_fields():
         PersonSerializer.deserialize_json(json)
     assert 'field missing' in str(se)
 
-
-# todo: custom fields
-def test_serializer__custom_field_when_defined_should_be_added_to_serialized_obj():
-    assert False, "todo"
-
-def test_serializer__custom_field_when_defined_should_be_added_to_serialized_obj_list():
-    assert False, "todo"
-
-def test_serializer__when_custom_field_then_method_for_it_should_be_defined():
-    assert False, "todo"
 # todo: feature -> xml ???
-

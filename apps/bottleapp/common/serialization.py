@@ -10,8 +10,9 @@ class Serializer:
     # todo: docs
     # todo: feature - xml ?
     """
-    fields = tuple()
     model = None
+    fields = tuple()
+    custom_fields = tuple()
 
     def __init__(self, obj):
         self.__class__.__validate_model_attr()
@@ -35,6 +36,12 @@ class Serializer:
                             result[field] = getter(getattr(instance, field))
                         else:
                             raise SerializerError(f'serializer_method not found for field: {field}')
+                for custom_field in self.custom_fields:
+                    getter = getattr(self, f'get_{custom_field}', None)
+                    if callable(getter):
+                        result[custom_field] = getter(instance)
+                    else:
+                        raise SerializerError(f'get_{custom_field} not defined')
                 return result
             except Exception as e:
                 raise SerializerError(f'serialization failed:\n{e}')
