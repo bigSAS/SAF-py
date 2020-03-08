@@ -4,11 +4,14 @@ API - demo api - notes app
 from json import dumps
 from bottle import Bottle, request, HTTPResponse
 from pony.orm import select, db_session, commit
+from pony.orm.core import ObjectNotFound
 
 from enum import Enum
 from typing import List
-from api.model import init_db, Note, NoteSerializer
-from common.validation import Validator, ValidationResult, ValidationError
+from api.model import init_db, Note
+from api.validators import NoteValidator
+from api.serializers import NoteSerializer
+from common.validation import ValidationResult
 
 
 API_ROOT = '/api'
@@ -16,6 +19,7 @@ API_ROOT = '/api'
 
 class Route(Enum):
     NOTES = '/notes'
+    NOTE = '/notes/<note_id:int>'
 
     @staticmethod
     def list() -> List[str]:
@@ -35,6 +39,15 @@ def route(route: Route) -> str:
 api = Bottle()
 init_db()
 
+
+def not_found():
+    return HTTPResponse(body=None, status=404)
+
+
+def bad_request(errors):
+    return HTTPResponse(body=dumps(errors), status=400)
+
+
 @api.route(API_ROOT)
 def api_root():
     return dumps(Route.list())
@@ -47,21 +60,6 @@ def list_notes():
         return NoteSerializer(notes).json
 
 
-class NoteValidator(Validator):
-    validate_fields = ('author', 'note')
-
-    def __init__(self, data):
-        super().__init__(data, Note)
-
-    @staticmethod
-    def validate_author(author):
-        if author != 'sas': raise ValidationError('author must be sas')
-
-    @staticmethod
-    def validate_note(note):
-        if len(note) > 5: raise ValidationError('note must be max 5 chars long')
-
-
 @api.route(route(Route.NOTES), method=['POST'])
 def add_note():
     with db_session:
@@ -71,4 +69,14 @@ def add_note():
             commit()
             return NoteSerializer(new_note).json
         else:
-            return HTTPResponse(body=dumps(result.errors), status=400)
+            return bad_request(result.errors)
+
+
+@api.route(route(Route.NOTE), method=['GET'])
+def get_note(note_id):
+    with db_session:
+        try:
+            note = Note[note_id]
+            return NoteSerializer(note).json
+        except ObjectNotFound:
+            return not_found()
