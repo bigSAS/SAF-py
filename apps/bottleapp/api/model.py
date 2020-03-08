@@ -11,7 +11,7 @@ class Note(db.Entity):
     note = Required(str)
 
 class NoteSerializer(Serializer):
-    fields = ('author', 'note')
+    fields = ('id', 'author', 'note')
     model = Note
 
 
