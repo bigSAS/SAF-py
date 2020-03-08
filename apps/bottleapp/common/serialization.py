@@ -1,42 +1,6 @@
-from json import dumps, loads
+from json import dumps
 from dicttoxml import dicttoxml
 from collections.abc import Iterable
-
-
-class ValidationError(Exception):
-    def __init__(self, error_msg, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.error_msg = error_msg
-
-
-class Validator:
-    def __init__(self, data):
-        self.data = data
-        self.errors = []
-        self.__validation_run = False
-
-    def validate(self, fields):
-        self.errors = []
-        for field in fields:
-            validator_func = getattr(self, f'validate_{field}', None)
-            if callable(validator_func):
-                try:
-                    validator_func(self.data.get(field, None))
-                except ValidationError as ve:
-                    self.errors.append({
-                        field: ve.error_msg
-                    })
-                except Exception as e:
-                    self.errors.append({
-                        field: str(e)
-                    })
-        self.__validation_run = True
-
-    @property
-    def data_is_valid(self):
-        if not self.__validation_run:
-            raise ValidationError('Run validate first!')
-        return len(self.errors) == 0
 
 
 class SerializerError(Exception): pass
@@ -121,7 +85,6 @@ class Serializer:
     json = '{"name": "fjus", "species": "dog"}'
     fjus: Pet = PetSerializer.model_instance_from(json)
     """
-    # todo: model_instance_from validation
     model = None
     validator_class = None
     fields = tuple()
@@ -179,44 +142,44 @@ class Serializer:
             )
         return dicttoxml(self.serialized, attr_type=False, custom_root=self.model.__name__)
 
-    @classmethod
-    def load_json(cls, json):
-        return cls.__load_json(json)
+    # @classmethod
+    # def load_json(cls, json):
+    #     return cls.__load_json(json)
 
-    @classmethod
-    def model_instance_from(cls, json):
-        loaded = cls.__load_json(json)
-        if isinstance(loaded, list):
-            return [cls.__create_model_obj(obj) for obj in loaded]
-        return cls.__create_model_obj(loaded)
+    # @classmethod
+    # def model_instance_from(cls, json):
+    #     loaded = cls.__load_json(json)
+    #     if isinstance(loaded, list):
+    #         return [cls.__create_model_obj(obj) for obj in loaded]
+    #     return cls.__create_model_obj(loaded)
 
-    @classmethod
-    def __create_model_obj(cls, data):
-        # todo: wrap result into own class, adapt tests
-        for field in cls.fields:
-            if field not in data.keys():
-                raise SerializerError(f'field missing: {field}')
-        result = {
-            "object": None,
-            "errors": []
-        }
-        if cls.validator_class:
-            validator = cls.validator_class(data)
-            validator.validate(cls.fields)
-            if validator.data_is_valid:
-                result["object"] = cls.model(**data)
-            else:
-                result["errors"] = validator.errors
-        else:
-            result["object"] = cls.model(**data)
-        return result
+    # @classmethod
+    # def __create_model_obj(cls, data):
+    #     # todo: wrap result into own class, adapt tests
+    #     for field in cls.fields:
+    #         if field not in data.keys():
+    #             raise SerializerError(f'field missing: {field}')
+    #     result = {
+    #         "object": None,
+    #         "errors": []
+    #     }
+    #     if cls.validator_class:
+    #         validator = cls.validator_class(data)
+    #         validator.validate(cls.fields)
+    #         if validator.data_is_valid:
+    #             result["object"] = cls.model(**data)
+    #         else:
+    #             result["errors"] = validator.errors
+    #     else:
+    #         result["object"] = cls.model(**data)
+    #     return result
 
-    @staticmethod
-    def __load_json(json):
-        try:
-            return loads(json)
-        except:
-            raise SerializerError('invalid json')
+    # @staticmethod
+    # def __load_json(json):
+    #     try:
+    #         return loads(json)
+    #     except:
+    #         raise SerializerError('invalid json')
 
     @classmethod
     def __validate_model_attr(cls):

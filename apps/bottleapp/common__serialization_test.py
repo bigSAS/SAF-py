@@ -1,18 +1,9 @@
 import pytest
 from json import loads
-from pony.orm import db_session, select
-from api.model import Note
-from common.serialization import Serializer, SerializerError, ValidationError, Validator
+from common.serialization import Serializer, SerializerError
 
 
-def test_db_insert(db):
-    with db_session:
-        Note(author='jimmy', note='...')
-        new_notes = select(n for n in Note)[:]
-        assert len(new_notes) == 1
-
-
-# @Serializer tests
+# todo: refactor classes ?
 class Person:
     def __init__(self, name, age):
         self.name = name
@@ -302,33 +293,6 @@ def test_serializer__when_custom_field_then_method_for_it_should_be_defined():
     assert 'get_baz not defined' in str(se)
 
 
-def test_serializer__model_instance_from_json_should_return_model_object_instance():
-    json = '{"name": "jimmy", "age": 21}'
-    result = PersonSerializer.model_instance_from(json)
-    assert isinstance(result.get('object', None), PersonSerializer.model)
-
-
-def test_serializer__model_instance_from_json_with_list_should_return_model_obj_instance_list():
-    json = '[{"name": "jimmy", "age": 21}, {"name": "jimmyh", "age": 23}]'
-    result = PersonSerializer.model_instance_from(json)
-    assert isinstance(result, list)
-    for r in result:
-        assert isinstance(r.get('object', None), PersonSerializer.model)
-
-
-def test_serializer__when_model_instance_from_json_must_be_valid_json_string():
-    invalid_json = '{name: "jimmy", "age": 21}'
-    with pytest.raises(SerializerError) as se:
-        PersonSerializer.model_instance_from(invalid_json)
-    assert 'invalid json' in str(se)
-
-
-def test_serializer__deserializing_json_must_contain_correct_fields():
-    json = '{"name": "jimmy"}'
-    with pytest.raises(SerializerError) as se:
-        PersonSerializer.model_instance_from(json)
-    assert 'field missing' in str(se)
-
 def test_serializer__None_field_value_should_result_as_null_in_json():
     class Pet:
         name = None
@@ -354,29 +318,3 @@ def test_serializer__empty_string_field_value_should_result_as_empty_string_in_j
     serializer = PetSerializer(Pet())
     json = serializer.json
     assert loads(json).get('name') == ''
-
-if __name__ == '__main__':
-    class MyValidator(Validator):
-        
-        @staticmethod
-        def validate_foo(foo):
-            raise ValidationError("beng!")
-    
-    obj = {
-        "foo": "sas"
-    }
-
-    class Fe:
-        def __init__(self, foo):
-            self.foo = foo
-        
-        def __str__(self):
-            return f'Fe: {self.foo}'
-
-    class FeSerializer(Serializer):
-        model = Fe
-        validator_class = MyValidator
-        fields = ('foo', )
-    
-    obj = FeSerializer.model_instance_from('{"foo": "bar"}')
-    print(obj)
