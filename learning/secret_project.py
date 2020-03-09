@@ -1,3 +1,5 @@
+import types
+
 class Car:
 
     
@@ -28,7 +30,19 @@ class Customer:
     def __str__(self):
         
         return f'Customers choice -> name: {self.name}, engine: {self.engine}, power: {self.power}, price: {self.price}.'
+        
+class CarWizard:
+    
+    
+    def __init__(self, car, customer):
+        
+        self.listed_cars = []
+        self.price_in_range = False
 
+        
+    def check_price(self, car, customer):
+        
+    
     
     
 if __name__ == "__main__":
@@ -103,5 +117,5 @@ if __name__ == "__main__":
     print(customer_3)
     print(customer_4)
 
-
+    
 
