@@ -38,6 +38,8 @@ customer.put_in_basket('5g lemon haze (CBD only)')
 customer.put_in_basket('2g white widow (CBD only)')
 customer.put_in_basket('5g strawberry kush (CBD only)')
 customer.buy()
+
+print('done. :)')
                     
 
 """
