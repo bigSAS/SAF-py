@@ -2,3 +2,10 @@
 * bottle
 * pony
 * goodies
+
+## todo:
+* user model
+* auth
+* jwt
+* vue POC
+* 

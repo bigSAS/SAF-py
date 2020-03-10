@@ -11,7 +11,6 @@ from typing import List
 from api.model import init_db, Note
 from api.validators import NoteValidator
 from api.serializers import NoteSerializer
-from common.validation import ValidationResult
 
 
 API_ROOT = '/api'
@@ -27,7 +26,26 @@ class Route(Enum):
             {
                 "route": "notes",
                 "path": route(Route.NOTES),
-                "description": "notes list"
+                "method": "GET",
+                "description": "list notes",
+                "body": None
+            },
+            {
+                "route": "notes",
+                "path": route(Route.NOTES),
+                "method": "POST",
+                "description": "add note",
+                "body": {
+                    "author": "str(R)",
+                    "note": "str(R)"
+                }
+            },
+            {
+                "route": "note",
+                "path": route(Route.NOTE) + '{note_id}',
+                "method": "GET",
+                "description": "get note",
+                "body": None
             }
         ]
 
@@ -40,6 +58,11 @@ api = Bottle()
 init_db()
 
 
+@api.route(API_ROOT)
+def api_root():
+    return dumps(Route.list(), indent=2, sort_keys=True)
+
+
 def not_found():
     return HTTPResponse(body=None, status=404)
 
@@ -48,35 +71,5 @@ def bad_request(errors):
     return HTTPResponse(body=dumps(errors), status=400)
 
 
-@api.route(API_ROOT)
-def api_root():
-    return dumps(Route.list())
+from api.modules.notes import list_notes, add_note, get_note
 
-
-@api.route(route(Route.NOTES), method=['GET'])
-def list_notes():
-    with db_session:
-        notes = list(select(n for n in Note)[:])
-        return NoteSerializer(notes).json
-
-
-@api.route(route(Route.NOTES), method=['POST'])
-def add_note():
-    with db_session:
-        result: ValidationResult = NoteValidator(request.json).validate()
-        if result.is_valid:
-            new_note: Note = result.object
-            commit()
-            return NoteSerializer(new_note).json
-        else:
-            return bad_request(result.errors)
-
-
-@api.route(route(Route.NOTE), method=['GET'])
-def get_note(note_id):
-    with db_session:
-        try:
-            note = Note[note_id]
-            return NoteSerializer(note).json
-        except ObjectNotFound:
-            return not_found()

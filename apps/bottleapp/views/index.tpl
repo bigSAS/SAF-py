@@ -9,6 +9,7 @@
   <body>
     <div class="container">
       % include('welcome-msg.tpl')
+      <div id="app"></div>
     </div>
     % include('js-imports.tpl')
   </body>

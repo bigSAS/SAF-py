@@ -45,10 +45,10 @@ def index():
 
 # @run app server
 if __name__ == "__main__":
-    # local
+    # @local
     app = bottle.default_app()
     app.merge(api)
     app.run(host='localhost', port=8080)
-# gunicorn
+# @gunicorn
 app = bottle.default_app()
 app.merge(api)

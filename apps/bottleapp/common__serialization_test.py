@@ -3,19 +3,18 @@ from json import loads
 from common.serialization import Serializer, SerializerError
 
 
-# todo: refactor classes ?
 class Person:
     def __init__(self, name, age):
         self.name = name
         self.age = age
 
 
-jimmy = Person('Jimmy', 69)
-
-
 class PersonSerializer(Serializer):
     fields = ('name', 'age')
     model = Person
+
+
+jimmy = Person('Jimmy', 69)
 
 
 def test_serializer__json_should_return_valid_json_when_single_obj_instance():
@@ -34,10 +33,13 @@ def test_serializer__when_instatiated_with_obj_list_should_return_list():
     assert isinstance(PersonSerializer([jimmy, jimmy]).serialized, list)
 
 
-def test_serializer__serialized_should_have_correct_keys():
-    # todo: rozbic na dwa testy, jeden na dlugosc drugi na klucze
+def test_serializer__serialized_should_have_same_num_of_fields_as_field_attr():
     person_serializer = PersonSerializer(jimmy)
     assert len(person_serializer.fields) == len(person_serializer.serialized.keys())
+    
+
+def test_serializer__serialized_should_have_correct_keys():
+    person_serializer = PersonSerializer(jimmy)
     for field in person_serializer.fields:
         assert field in person_serializer.serialized.keys()
 

@@ -2,3 +2,4 @@
 ignore = E226,E302,E41,E402,E261,E305,E111,E121,E401,E701,W501,C901,W503,E266,E114,E228,E722,E741
 max-line-length = 100
 max-complexity = 10
+
