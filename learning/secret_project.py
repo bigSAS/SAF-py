@@ -17,32 +17,41 @@ class Car:
         return f'Car -> make: {self.make}, model: {self.model}, model year: {self.model_year}, engine: {self.engine}, power: {self.power}, price: {self.price}.'
     
 
-class Customer:
-    
-    
-    def __init__(self, name, engine, power, price):
-        
-        self.name: str = name
+class Expectations:
+    def __init__(self, engine, power, price):
         self.engine: str = engine
         self.power: str = power
         self.price: str = price
+        
+    def __str__(self):
+        return f'Exp(e: {self.engine}, po: {self.power}, pr: {self.price})'
+
+
+class Customer:
+    def __init__(self, name, expectations):
+        self.name: str = name
+        self.expectations = expectations
 
     def __str__(self):
         
-        return f'Customers choice -> name: {self.name}, engine: {self.engine}, power: {self.power}, price: {self.price}.'
+        return  f'Customer: {self.name} => exp: {self.expectations}'
         
 class CarWizard:
-    
-    
-    def __init__(self, car, customer):
-        
-        self.listed_cars = []
-        self.price_in_range = False
+    def __init__(self, cars):
+        self.cars = cars
 
-        
-    def check_price(self, car, customer):
-        
-    
+    def find_cars(self, customer):
+        print('searching')
+        print('customer exp:', customer.expectations)
+        result = []
+        for car in  self.cars:
+            if self.correct_car(car, customer.expectations):
+                result.append(car)
+        return result
+
+    @staticmethod
+    def correct_car(car, expectations):
+        return int(car.power) >= int(expectations.power) and int(car.price) <= int(expectations.price)
     
     
 if __name__ == "__main__":
@@ -80,42 +89,31 @@ if __name__ == "__main__":
         yaris
         ]
         
-    customer_1 = Customer(
-        'Jan',
+    wizard = CarWizard(cars_list)
+    
+    c1_name = 'Jan'
+    c1_ex = Expectations(
         'PB',
         '100',
         '65000'
-        )
-        
-    customer_2 = Customer(
-        'Tomek',
-        'ON',
-        '150',
-        '50000'
-        )
-        
-    customer_3 = Customer(
-        'Piotrek',
-        'PB',
-        '80',
-        '70000'
-        )
-        
-    customer_4 = Customer(
-        'Gosia',
-        'PB',
-        '80',
-        '59000'
-        )    
+    )
+    customer_1 = Customer(c1_name, c1_ex)
+
             
     print(polo)
     print(fabia)
     print(yaris)
 
     print(customer_1)
-    print(customer_2)
-    print(customer_3)
-    print(customer_4)
-
+    
+    found_cars = wizard.find_cars(customer_1)
+    print('found')
+    for car in found_cars:
+        print(car)
+        
+    pow_in = int(input('power?'))
+    
+    print(isinstance(pow_in, int))
+    
     
 
