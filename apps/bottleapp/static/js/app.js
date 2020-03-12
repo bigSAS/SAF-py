@@ -1,11 +1,12 @@
-console.log('sas kodzi !!!')
+const routes = [
+  { path: '', component: Home },
+]
 
-var app = new Vue({
-  template: '<div>{{ msg }}</div>',
-  data: function () {
-    return {
-      msg: 'sas kodzi'
-    }
-  }
-}).$mount('#app')
+const router = new VueRouter({
+  routes
+});
+
+new Vue({
+  router
+}).$mount('#app');
 

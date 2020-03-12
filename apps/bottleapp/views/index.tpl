@@ -8,9 +8,11 @@
   </head>
   <body>
     <div class="container">
-      % include('welcome-msg.tpl')
-      <div id="app"></div>
+      % include('views/components/app.tpl')
     </div>
+    <!-- VUE COMPONENTS -->
+    % include('views/components/views/home.tpl')
+    <!-- JS -->
     % include('js-imports.tpl')
   </body>
 </html>
