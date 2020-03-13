@@ -61,15 +61,25 @@ class Discount:
         discounts = [0.05, 0.10, 0.20]
         if self.car.price > 50000 and self.car.price < 60000:
             new_price = self.car.price - (self.car.price * discounts[0])
-            return f'If you buy a car with CarWizard.pl price is {new_price}'
+            return new_price
             
         elif self.car.price > 60000 and self.car.price < 65000:
             new_price = self.car.price - (self.car.price * discounts[1])
-            return f'If you buy a car with CarWizard.pl price is {new_price}'
+            return new_price
             
         else:
             return 'Something went wrong call administrator 501052396 :('
+            
+class Ask_for_contact:
+    
+    
+    def __init__(self, car, customer, phone):
+        self.car = car
+        self.customer = customer
+        self.phone = phone
         
+    def __str__(self):
+        return f'Our client is looking for {self.car.make} {self.car.model}, please call him: {self.customer.name} phone: {self.phone}'       
         
 if __name__ == "__main__":
     
@@ -116,12 +126,14 @@ if __name__ == "__main__":
     )
     
     customer_1 = Customer(c1_name, c1_ex)
-    
+    ask_for_contact = Ask_for_contact(yaris, customer_1, '501-052-396')    
     print(customer_1)
     
     found_cars = wizard.find_cars(customer_1)
     print('found')
     for car in found_cars:
         print(car)
-        print(Discount(car).carwizards_price())
+        print(f'If you buy a car with carwizard you will pay {Discount(car).carwizards_price()}')
+        
+    print(ask_for_contact)
           
