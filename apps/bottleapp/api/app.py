@@ -60,7 +60,7 @@ init_db()
 
 @api.route(API_ROOT)
 def api_root():
-    return dumps(Route.list(), indent=2, sort_keys=True)
+    return dumps(Route.list())
 
 
 def not_found():

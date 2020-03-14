@@ -1,6 +1,7 @@
 from common.validation import Validator, ValidationError
 from api.model import Note
 
+
 class NoteValidator(Validator):
     # todo: legitimize validator -> this one is for tests
     validate_fields = ('author', 'note')

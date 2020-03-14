@@ -4,9 +4,11 @@
 * goodies
 
 ## todo back:
-* [] user model
+* [x] user model
 * [] auth
-* [] jwt   
+* [] jwt
+* [] user groups
+* [] group permissions
 
 ## todo front:
 * vue POC

@@ -5,6 +5,18 @@ INIT_DB = False
 db = Database()
 
 
+class User(db.Entity):
+    """ User entity """
+    email = Required(str, unique=True)
+    password = Required(str)
+    username = Optional(str)
+    info = Optional(str)
+    is_superuser = Required(bool)
+    
+    def __str__(self):
+        return f'{self.email} [su: {self.is_superuser}]'
+
+
 class Note(db.Entity):
     author = Required(str)
     note = Required(str)
