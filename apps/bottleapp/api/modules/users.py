@@ -1,2 +1,0 @@
-""" todo: User model endpoints """
-
