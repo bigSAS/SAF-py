@@ -12,31 +12,39 @@ class Car:
         
         
 class Customer_expec:
+    
     def __init__(self, price_day, category):
         self.price_day = price_day
         self.category = category
+        
+class Rent:
     
+    def __init__(self, car, customer):
+        self.car = car
+        self.customer = customer        
+        
     def __str__(self):
-        return f"Customer's expectations: max price: {self.price_day}/day', category: {self.category}"
-       
-    
+        return f"Customer's expectations: max price: {self.price_day}/day', category:             {self.category}"
     
     
 class Customer:
-    def __init__(self, first_name, last_name, ):
+    
+    num_of_customers = 0
+    def __init__(self, first_name, last_name, customer_expec):
         self.first_name = first_name
         self.last_name = last_name
+        self.customer_expec = customer_expec
+        Customer.num_of_customers += 1
     
     def give_login(self):
         login = f'{self.first_name}.{self.last_name}'
         return login
         
     def __str__(self):
-        return f'first name: {self.first_name}, last name: {self.last_name}, login: {self.give_login().lower()}'
+        return f'first name: {self.first_name}, last name: {self.last_name}, login: {self.give_login().lower()}, his expectations: price: {self.customer_expec.price_day}, car category: {self.customer_expec.category}'
         
-
-
-    
+        
+        
     
 if __name__ == '__main__':
     
@@ -49,6 +57,15 @@ if __name__ == '__main__':
     a8 = Car(7, 'Audi', 'A8', 500, 'VIP')
     bmw_7 = Car(8, 'BMW', '740i', 550, 'VIP')
     merc_s = Car(9, 'Mercedes', 'S-Class', 600, 'VIP')
+    
+    customer1_expec = Customer_expec(400, 'Premium')
+    customer2_expec = Customer_expec(100, 'Basic')
+    customer3_expec = Customer_expec(570, 'VIP')   
+    
+    customer1 = Customer('Piotr', 'Menel', customer1_expec)
+    customer2 = Customer('Małgorzata', 'Żukowska', customer2_expec)
+    customer3 = Customer('Tomasz', 'Majk', customer3_expec)
+    
     print(polo)
     print(fabia)    
     print(ibiza)
@@ -59,16 +76,6 @@ if __name__ == '__main__':
     print(bmw_7)
     print(merc_s)
     
-    customer1_expec = Customer_expec(400, 'Premium')
-    customer2_expec = Customer_expec(100, 'Basic')
-    customer3_expec = Customer_expec(570, 'VIP')   
-    print(customer1_expec)
-    print(customer2_expec)
-    print(customer3_expec)
-    
-    customer1 = Customer('Piotr', 'Menel')
-    customer2 = Customer('Małgorzata', 'Żukowska')
-    customer3 = Customer('Tomasz', 'Majk')
     print(customer1)
     print(customer2)
     print(customer3)
