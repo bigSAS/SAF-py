@@ -41,7 +41,7 @@ PERSONS = [
     {
         'name': 'billy',
         'age': 35,
-        'email': None
+        'email': None,
         'pet': {
             'name': 'hellokitty',
             'species': 'cat'
