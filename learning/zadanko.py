@@ -1,3 +1,142 @@
+# każda osoba to słowniczek z atrybutami.
+
+phenomenelik = {
+    'name': 'Piotrek',
+    'age': 32,
+    'email': 'piotr.menel@gmail.com',
+    'pet': None
+}
+
+monstersasog = {
+    'name': 'Tomek',
+    'age': 35,
+    'email': 'bigsasit@gmail.com',
+    'pet': {
+        'name': 'Fifi',
+        'species': 'Dog'
+    }
+}
+
+margotzuk = {
+    'name': 'Gosia',
+    'age': 37,
+    'email': 'margotzuk@gmail.com',
+    'pet': {
+        'name': 'Celestyna',
+        'species': 'Cat'
+    }
+}
+
+ngsasog = {
+    'name': 'Ola',
+    'age': 28,
+    'email': None,
+    'pet': None
+}
+
+# następne każdy słownik jebutnąć to listy, w której zebrane są osoby, nie czy sobie bardziej nie skomplikowalem, ale co tam.
+
+persons = [phenomenelik, monstersasog, margotzuk, ngsasog]
+
+
+# ze zwierzakami już nie kombinowałem
+pets = [
+    {
+        'name': 'Bobik',
+        'spieces': 'Rabbit'
+    },
+    {
+        'name': 'Hektor',
+        'spieces': 'Dog'
+    },
+    {
+        'name': 'Denver',
+        'spieces': 'Last Dinosaur'
+    }
+]
+
+# 0 wyświetla osoby w liście persons
+def show_persons(persons):
+    i_person = 1
+    for person in persons:
+        print(f'{i_person}. {person}')
+        i_person += 1
+        
+# 0bis wyświetla zwierzaki w liście pets
+def show_pets(pets):
+    i_pets = 1
+    for pet in pets:
+        print(f'{i_pets}. {pet}')
+        i_pets += 1
+        
+
+
+# 1. Dodaj osobe do listy PERSON
+def add_person(person):
+    persons.append(person)
+    return persons
+
+
+jaszczur = {
+    'name': 'Jasiek',
+    'age': 34,
+    'email': None,
+    'pet': {
+        'name': 'Demolka',
+        'spieces': 'Cat'
+    }
+}
+
+add_person(jaszczur)
+show_persons(persons)
+print('-' * 20)
+print("")
+
+
+# 2. Usun osobe z listy PERSONS -> chciałem użyć na początku pop, ale to musiałbym indeks wskazać
+def remove_person(person):
+    persons.remove(person)
+    return persons
+    
+remove_person(phenomenelik)
+show_persons(persons)
+print('-' * 20)
+print("")
+
+
+# 3. Dodaj zwierzaka do listy PETS
+def add_pet(pet):
+    pets.append(pet)
+    return pets
+
+add_pet({'name': 'Gawron', 'spieces': 'Bird'})
+show_pets(pets)
+print('-' * 20)
+print("")
+
+# 4. Edytuj zwierzaka z listy PETS - DO ROZKMINY
+def edit_pet():
+    pass
+print('-' * 20)
+print("")
+
+# 5. Znajdz osobe w liscie PERSONS (parametry dowolne poza indexem w liscie - zeby bylo kurwa trudniej)
+    
+    
+# 6. Znajdz zwierzaka w liscie PETS (jw)
+
+
+# 7. Przypisz zwierzaka osobie na liscie PERSONS
+
+
+# 8. Zabierz zwierzaka osobie na liscie PERSONS
+
+
+
+
+
+
+
 """
 Zadanko z funkcji - projektowania itd all around :)
 ! Important !
@@ -31,6 +170,7 @@ lista osob, maja atrybuty:
 Jak widac wyjsciowa lista przechowuje rozne osoby jeden ma email ale nie ma zwierzaka, inny ma zwierzaka ale nie ma emaila, inny nie ma ani maila ani zwierzaka itd ;)
 Zrobilem to specjalnie bo pozwoli to wykonac wiecej operacji na tych danych i w jakis tam sposob ma przelozenie na prawdziwe zycie jak cos sie kodzi, nie zawsze otrzymujesz takie dane jak bys chcial, musisz je w jakis sposob przemielic zeby nadawaly sie do twojego programu :) to samo masz w ferrycie tylko w bardziej popierdolony sposob B-) tu jest o wiele latwiej (jak oswoisz sie z programowaniem :))
 """
+"""
 PERSONS = [
     {
         'name': 'jimmy',
@@ -63,12 +203,13 @@ PERSONS = [
         'pet': None
     },
 ]
-
+"""
 """
 Lista zwierzakow, tu prosciej jest sobie kilka zwierzakow poprostu, beda potrzebne do operacji na PERSONSach :)
 kazdy zwierzak ma dwa atrybuty:
     - name - imie
     - species - gatunek (bmozliwe ze mam literowke -> jebac :) )
+"""
 """
 PETS = [
     {
@@ -84,7 +225,7 @@ PETS = [
         'species': 'rabbit'
     }
 ]
-
+"""
 
 """
 OK czyli masz PERSONS i PETS, niby nic takiego, dwie listy ze slownikami, ale ...
@@ -125,4 +266,5 @@ Jak juz bedziesz mial gotowe funkcje, chcialbym abys z ich uzyciem wykonal opera
 Do dziela :) - na poczatku pewnie wyda ci sie straszne to - ale w rzeczywistosci to jest bardzo proste, i w sumie wiekszosc (jesli nie wszystko) co tu jest to juz robiles w jakis tam sposob :)
 """
 
-print('lesgooooo')
+#print('lesgooooo')
+
