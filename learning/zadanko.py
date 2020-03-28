@@ -166,6 +166,16 @@ print("")
 print('___ZADANIE_7___')
 print("")
           
+def add_pet(persons, person, pet_to_add):
+     if person in persons and person['pet'] == None:
+         return person
+         pass
+#kurwa mać nie wiem jak to ogrnąć myślałem, że mogę odwrócić func z zadania 8 a tu chooya
+     
+pet_to_add = search_pet(pets, 'name', 'Denver')
+print(pet_to_add)
+add_pet(persons, phenomenelik, pet_to_add)
+print(phenomenelik.get('pet'))
 
 print('-' * 20)
 print("")
@@ -173,8 +183,14 @@ print("")
 # 8. Zabierz zwierzaka osobie na liscie PERSONS
 print('___ZADANIE_8___')
 print("")
-          
 
+def take_from_person(persons, person):
+     if person in persons:
+         person['pet'] = None
+         return person
+
+print(take_from_person(persons, monstersasog))
+print()
 print('-' * 20)
 print("")
 
