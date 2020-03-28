@@ -1,4 +1,5 @@
 # każda osoba to słowniczek z atrybutami.
+# printy są ćwiczeniowe, wiem że działa funkcja
 
 phenomenelik = {
     'name': 'Piotrek',
@@ -72,6 +73,9 @@ def show_pets(pets):
 
 
 # 1. Dodaj osobe do listy PERSON
+print('___ZADANIE_1___')
+print("")
+
 def add_person(person):
     persons.append(person)
     return persons
@@ -94,6 +98,9 @@ print("")
 
 
 # 2. Usun osobe z listy PERSONS -> chciałem użyć na początku pop, ale to musiałbym indeks wskazać
+print('___ZADANIE_2___')
+print("")
+
 def remove_person(person):
     persons.remove(person)
     return persons
@@ -105,6 +112,9 @@ print("")
 
 
 # 3. Dodaj zwierzaka do listy PETS
+print('___ZADANIE_3___')
+print("")
+
 def add_pet(pet):
     pets.append(pet)
     return pets
@@ -115,22 +125,58 @@ print('-' * 20)
 print("")
 
 # 4. Edytuj zwierzaka z listy PETS - DO ROZKMINY
-def edit_pet():
-    pass
+print('___ZADANIE_4___')
+print("")
+          
+
 print('-' * 20)
 print("")
 
 # 5. Znajdz osobe w liscie PERSONS (parametry dowolne poza indexem w liscie - zeby bylo kurwa trudniej)
+print('___ZADANIE_5___')
+print("")
+# nie wiem dlaczego nie działa jak dam key 'name', value 'Piotrek'
+def search_person(persons, key, value):
+    for person in persons:
+        if person.get(key) == value:
+            return person
+        else: 'znowu nie bangla'
     
+print(search_person(persons, 'email', 'bigsasit@gmail.com'))
+
+print('-' * 20)
+print("")    
     
 # 6. Znajdz zwierzaka w liscie PETS (jw)
+print('___ZADANIE_6___')
+print("")
 
+def search_pet(pets, key, value):
+    for pet in pets:
+        if pet.get(key) == value:
+            return pet
+        else: 'znowu nie bangla'
+    
+print(search_pet(pets, 'name', 'Denver'))          
+
+print('-' * 20)
+print("")
 
 # 7. Przypisz zwierzaka osobie na liscie PERSONS
+print('___ZADANIE_7___')
+print("")
+          
 
+print('-' * 20)
+print("")
 
 # 8. Zabierz zwierzaka osobie na liscie PERSONS
+print('___ZADANIE_8___')
+print("")
+          
 
+print('-' * 20)
+print("")
 
 
 
