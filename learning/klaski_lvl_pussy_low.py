@@ -46,36 +46,37 @@ CARS = [
 
 # ! -> znajdz wszystkie ktore pasuja i oddaj liste
 # ! -> jesli nie znajdzie nic to oddaje pusta liste
-def get_cars_by_make(make: str) -> list:
+def get_cars_by_make(make: str) -> list: DONE
     pass
 
-def get_cars_by_model(make: str) -> list:
+def get_cars_by_model(make: str) -> list: DONE
     pass
 
-def get_cars_by_make_and_model(make: str, model: str) -> list:
+def get_cars_by_make_and_model(make: str, model: str) -> list: DONE
     pass
 
 # todo: mozesz tez zrobic warianty dla get_car -> oddaj jeden obiekt
 # ! hint: wystarczy ze oddasz pierwszy, ktory pasuje (nawet jesli by wiecej pasowalo)
 # ! -> jesli nie znajdzie to podnies wyjatek CarNotFoundHommie :)
-def get_car_by_make(make: str) -> Car:
+def get_car_by_make(make: str) -> Car: DONE
     pass
 
-def get_car_by_model(make: str) -> Car:
+def get_car_by_model(make: str) -> Car: DONE
     pass
 
-def get_car_by_make_and_model(make: str, model: str) -> Car:
+def get_car_by_make_and_model(make: str, model: str) -> Car: DONE
     pass
     
 """
 
-class CarNotFound(Exception):
+class CarNotFoundHommie(Exception):
+    """klasa reprezentująca błąd występujący podczas wywołania funckji"""
     pass
 
 
 class Car:
-    "klasa reprezentująca samochód, posiada 3 parametry markę->make, nazwę modelu->model, oraz rocznik->year"
-    def __init__(self, make, model, year):
+    """klasa reprezentująca samochód, posiada 3 parametry markę->make, nazwę modelu->model, oraz rocznik->year"""
+    def __init__(self, make: str, model: str, year: int):
         self.make: str = make
         self.model: str = model
         self.year: int = year
@@ -86,7 +87,7 @@ class Car:
         
 class Owner:
     """Klasa reprezentująca właścicela pojazdu"""
-    def __init__(self, name, email, age, car):
+    def __init__(self, name: str, email: str, age: int, car: object):
         self.name: str = name
         self.email: str = email
         self.age: int = age
@@ -98,7 +99,8 @@ class Owner:
 
 # ! -> znajdz wszystkie ktore pasuja i oddaj liste
 # ! -> jesli nie znajdzie nic to oddaje pusta liste
-def get_cars_by_make(cars_list, make):
+def get_cars_by_make(cars_list: list, make: str):
+    """funkcja zwracająca listę samochodów wskazanej wcześniej marki"""
     cars = []
     for car in cars_list:
         if car.make == make:
@@ -106,14 +108,16 @@ def get_cars_by_make(cars_list, make):
     return cars
         
 
-def get_cars_by_model(cars_list, model):
+def get_cars_by_model(cars_list: list, model: str):
+    """funkcja zwracajaąca listę samochodów wskazanego wcześniej modelu"""
     cars = []
     for car in cars_list:
         if car.model == model:
             cars.append(car)
     return cars
 
-def get_cars_by_make_and_model(cars_list, make, model):
+def get_cars_by_make_and_model(cars_list: list, make: str, model: str):
+    """funkcja zwracająca listę samochodów o wskazanym modelu i marce"""
     cars = []
     for car in cars_list:
         if car.model == model and car.make == make:
@@ -123,27 +127,43 @@ def get_cars_by_make_and_model(cars_list, make, model):
 # todo: mozesz tez zrobic warianty dla get_car -> oddaj jeden obiekt
 # ! hint: wystarczy ze oddasz pierwszy, ktory pasuje (nawet jesli by wiecej pasowalo)
 # ! -> jesli nie znajdzie to podnies wyjatek CarNotFoundHommie :)
-def get_car_by_make(cars_list, make):
+def get_car_by_make(cars_list: list, make: str):
+    """funkcja zwracająca samochód wskazanej marki, pierwszy odnaleziony"""
+    found_car = None
     for car in cars_list:
         if car.make == make:
+            found_car = True
             break
+    if found_car is None:
+       raise CarNotFoundHommie(f'Car {make} not found')
     return car
         
 
-def get_car_by_model(cars_list, model):
+def get_car_by_model(cars_list: list, model: str):
+    """funkcja zwracająca wskazany model samochodu, pierwszy odnaleziony"""
+    found_car = None
     for car in cars_list:
         if car.model == model:
+            found_car = True
             break
+    if found_car is None:
+       raise CarNotFoundHommie(f'Car {model} not found')
     return car
 
-def get_car_by_make_and_model(cars_list, make, model):
+def get_car_by_make_and_model(cars_list: list, make: str, model: str):
+    """funkcja zwracająca samochodów wskazanej marki i modelu, pierwszy odnaleziony"""
+    found_car = None
     for car in cars_list:
         if car.model == model and car.make == make:
+            found_car = True
             break
+    if found_car is None:
+       raise CarNotFoundHommie(f'Car {make} {model} not found')
     return car
 
 
 def print_list(list):
+    """funkcja zwraca elementy listy"""
     for item in list:
         print(item)
 
@@ -167,28 +187,81 @@ mati = Owner('Mateusz', 'smomat@o2.pl', 30, merc_obj)
 
 ownerz_list = [menel, dominika, wojtek, mati]
 
-
-got_cars_by_make = get_cars_by_make(cars_list, 'Honda')
+print('get_cars_by_make')
+print('')
+got_cars_by_make = get_cars_by_make(cars_list, make='Honda')
 print_list(got_cars_by_make)
 print('-'*10)
+print('')
 
-got_cars_by_model = get_cars_by_model(cars_list, 'Sportage')
+print('get_cars_by_make')
+print('')
+got_cars_by_make = get_cars_by_make(cars_list, make='Ferarri')
+print_list(got_cars_by_make)
+print('-'*10)
+print('')
+
+print('get_cars_by_model')
+print('')
+got_cars_by_model = get_cars_by_model(cars_list, model='Sportage')
 print_list(got_cars_by_model)
 print('-'*10)
+print('')
 
-got_cars_by_make_model = get_cars_by_make_and_model(cars_list, 'Honda', 'Jazz')
+print('get_cars_by_make_model')
+print('')
+got_cars_by_make_model = get_cars_by_make_and_model(cars_list, make='Honda', model='Jazz')
 print_list(got_cars_by_make_model)
-
 print('-'*30)
+print('')
 
-got_car_by_make = get_car_by_make(cars_list, 'Honda')
+print('get_car_by_make')
+print('')
+got_car_by_make = get_car_by_make(cars_list, make='Honda')
 print(got_car_by_make)
 print('-'*10)
-got_car_by_model = get_car_by_model(cars_list, 'Sportage')
+print('')
+
+print('get_car_by_make - not found')
+print('')
+try:
+    got_car_by_make_not_found = get_car_by_make(cars_list, make='SHIT')
+    print(got_car_by_make_not_found)
+except CarNotFoundHommie as ex:
+    print(f'{ex}')
+print('-'*10)
+print('')
+
+print('get_car_by_model')
+print('')
+got_car_by_model = get_car_by_model(cars_list, model='Sportage')
 print(got_car_by_model)
 print('-'*10)
-got_car_by_make_model = get_car_by_make_and_model(cars_list, 'Honda', 'Jazz')
-print(got_car_by_make_model)
+print('')
 
-    
-        
+print('get_car_by_model - not found')
+print('')
+try:
+    got_car_by_model_not_found = get_car_by_model(cars_list, model='SHIT')
+    print(got_car_by_make_not_found)
+except CarNotFoundHommie as ex:
+    print(f'{ex}')
+print('-'*10)
+print('')
+
+print('get_car_by_make_model')
+print('')
+got_car_by_make_model = get_car_by_make_and_model(cars_list, make='Honda', model='Jazz')
+print(got_car_by_make_model)
+print('-'*10)
+print('')
+
+print('get_car_by_make_model - not found')
+print('')
+try:
+    got_car_by_make_model = get_car_by_make_and_model(cars_list, make='Porsche', model='Panamjera')
+    print(got_car_by_make_model)
+except CarNotFoundHommie as ex:
+    print(ex)
+print('-'*10)
+print('')
