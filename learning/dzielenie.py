@@ -7,11 +7,19 @@ class DivisionByZeroh(Exception): pass
 
 def division(dzielna, dzielnik):
     iloraz = None
-    if dzielna > 0 and dzielnik > 0:
+    if dzielna > 0 and dzielnik > 0:  # to bedzie dzialac ale logika letko kuleje, nic takego ;)
         iloraz = dzielna / dzielnik
     if iloraz is None:
         raise DivisionByZeroh(f'Człeniu nie idzie używać zer w dzieleniu')
     return iloraz
+
+def division(a, b):
+    if b == 0: # skoro nie dzielimy przez 0 to jesli b jest zero to error ;)
+        raise DivisionByZeroh(f'Człeniu nie idzie używać zer w dzieleniu')
+    else:
+        return a / b
+    # wsio :)
+    
 
 print(division(dzielna=2, dzielnik=2))
 print(division(dzielna=100, dzielnik=10))    
