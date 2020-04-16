@@ -132,11 +132,13 @@ def get_car_by_make(cars_list: list, make: str):
     found_car = None
     for car in cars_list:
         if car.make == make:
-            found_car = True
+            found_car = True # tu zle
+            found_car = car # znaleziono -> przypisac obiekt do zmiennej
             break
     if found_car is None:
        raise CarNotFoundHommie(f'Car {make} not found')
-    return car
+    return found_car # oddaj znaleziony samochod
+    # ! popraw w reszcie funkcji to
         
 
 def get_car_by_model(cars_list: list, model: str):
