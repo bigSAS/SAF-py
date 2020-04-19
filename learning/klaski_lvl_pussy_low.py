@@ -160,6 +160,14 @@ def get_car_by_make_and_model(cars_list: list, make: str, model: str):
     if found_car is None:
        raise CarNotFoundHommie(f'Car {make} {model} not found')
     return car
+    
+def create_car_class():
+    """funkcja dzięki, której można stworzyć nowy obiekt Car"""
+    new_car_make = input("Write car's make: ")
+    new_car_model = input("Write car's model: ")
+    new_car_year = int(input("Write car's production year: "))
+    new_car = Car(new_car_make, new_car_model, new_car_year)
+    return new_car
 
 
 def print_list(list):
@@ -263,5 +271,14 @@ try:
     print(got_car_by_make_model)
 except CarNotFoundHommie as ex:
     print(ex)
+print('-'*10)
+print('')
+
+print('create_car_class')
+print('')
+dodge_obj = create_car_class()
+print(dodge_obj)
+cars_list.append(dodge_obj)
+print_list(cars_list)
 print('-'*10)
 print('')
