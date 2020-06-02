@@ -17,9 +17,9 @@ def test_google_search(actions: Actions):
     actions.submit()
     itd. omowimy se to
     """
-    driver = actions.element_provider.driver
+    driver = actions.driver
     search_text = 'dr dissrespect'  # tekst do wpisania
-    actions.element_provider.driver.get('https://google.pl')  # otworz gugle
+    driver.get('https://google.pl')  # otworz gugle
     search_input_selector = Selector(Using.NAME, 'q')  # definiujesz kontrolke (to se omowic bardziej mozemy)
     actions.type_text(search_input_selector, search_text)  # wpisz text
     actions.submit()  # submit formularza
@@ -37,6 +37,6 @@ def test_google_search_with_page_object(actions: Actions):
     search_text = 'dr dissrespect'
     search_page = Search(actions)  # tworze obiekt pagea
     search_page.search_for(search_text)  # wywoluje na nim metode szukaj
-    driver = actions.element_provider.driver
+    driver = actions.driver
     title = driver.title  # odczytaj tytul stronki
     assert search_text in title, f"tytul strony powinien zawierac: {search_text}"  # asercja

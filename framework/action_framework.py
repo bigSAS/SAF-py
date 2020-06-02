@@ -14,6 +14,10 @@ class Actions:
     def element_provider(self) -> WebElementProvider:
         return self.__element_provider
     
+    @property
+    def driver(self):
+        return self.__element_provider.driver
+    
     def click(self, selector: Selector, timeout: int = None):
         self.element_provider.find_element(selector, timeout).click()
         
