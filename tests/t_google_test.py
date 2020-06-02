@@ -1,9 +1,11 @@
+import pytest
 from framework.action_framework import Actions
 from framework.conditions import XpathExists
 from framework.selector import Selector, Using
 from pages.google.pages_google import Search
 
 
+@pytest.mark.debug
 def test_google_search(actions: Actions):
     """
     Szukaj z uzyciem samych actions'ow
@@ -27,7 +29,7 @@ def test_google_search(actions: Actions):
     title = driver.title  # odczytaj tytul stronki
     assert search_text in title, f"tytul strony powinien zawierac: {search_text}"  # asercja
 
-
+@pytest.mark.pop
 def test_google_search_with_page_object(actions: Actions):
     """
     Szukaj z uzyciem page objecta - to se pokminisz z czasem - prosty patern
