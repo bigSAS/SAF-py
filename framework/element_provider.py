@@ -10,6 +10,9 @@ from framework.selector import Selector
 
 
 class WebElementProvider(ABC):
+    DEFAULT_FIND_ELEMENT_TIMEOUT = 5
+    DEFAULT_WAIT_FOR_CONDITION_TIMEOUT = 15
+
     def __init__(self, driver: WebDriver):
         self.__driver = driver
         
@@ -27,15 +30,16 @@ class WebElementProvider(ABC):
     
 
 class BasicWebElementProvider(WebElementProvider):
-    DEFAULT_TIMEOUT = 5
+    DEFAULT_FIND_ELEMENT_TIMEOUT = 5
+    DEFAULT_WAIT_FOR_CONDITION_TIMEOUT = 15
 
     def find_element(self, selector: Selector, timeout: int = None) -> WebElement:
-        tout = timeout if timeout else self.DEFAULT_TIMEOUT
+        tout = timeout if timeout else self.DEFAULT_FIND_ELEMENT_TIMEOUT
         return WebDriverWait(self.driver, tout)\
             .until(ec.presence_of_element_located(selector.selector_tuple))
 
     def find_elements(self,
                       selector: Selector, timeout: int = None) -> List[WebElement]:
-        tout = timeout if timeout else self.DEFAULT_TIMEOUT
+        tout = timeout if timeout else self.DEFAULT_FIND_ELEMENT_TIMEOUT
         return WebDriverWait(self.driver, tout)\
             .until(ec.presence_of_all_elements_located(selector.selector_tuple))

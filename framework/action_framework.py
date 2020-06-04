@@ -1,5 +1,7 @@
 from abc import ABC
 
+from selenium.webdriver.support.wait import WebDriverWait
+
 from framework.selector import Selector, Using
 from framework.element_provider import WebElementProvider
 
@@ -12,6 +14,10 @@ class Actions:
     def element_provider(self) -> WebElementProvider:
         return self.__element_provider
     
+    @property
+    def driver(self):
+        return self.__element_provider.driver
+    
     def click(self, selector: Selector, timeout: int = None):
         self.element_provider.find_element(selector, timeout).click()
         
@@ -21,7 +27,12 @@ class Actions:
     def submit(self, selector: Selector = None, timeout: int = None):
         s = selector if selector else Selector(Using.XPATH, '//form')
         self.element_provider.find_element(s, timeout).submit()
-        
+
+    def wait_for(self, condition, timeout: int = None):
+        tout = timeout if timeout is not None else self.element_provider.DEFAULT_WAIT_FOR_CONDITION_TIMEOUT
+        return WebDriverWait(self.element_provider.driver, tout) \
+            .until(condition)
+
     def get_attribute(self, selector: Selector, attr: str, timeout: int = None) -> str:
         return self.element_provider.find_element(selector, timeout)\
             .get_attribute(attr)
