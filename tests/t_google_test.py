@@ -40,3 +40,14 @@ def test_google_search_with_page_object(actions: Actions):
     driver = actions.driver
     title = driver.title  # odczytaj tytul stronki
     assert search_text in title, f"tytul strony powinien zawierac: {search_text}"  # asercja
+
+@pytest.mark.menelfun
+def test_menel_fun(actions: Actions):
+    search_text = 'who\'s better bryant or jordan'
+    search_page = Search(actions)
+    search_page.search_for(search_text)
+    #search_page.actions.click(Using.)
+    driver = actions.driver
+    element_clickon = Selector('''a pierdole nie wiem jak kliknąć''')
+    search_page.actions.click()
+    title = driver.title
